@@ -76,17 +76,22 @@ function getQuestionsAndAnswers(event) {
   questionEl.textContent = questionBank[currentQuestionIndexNum].question;//index iterating through question bank
   //appending the question to the container
   containerEl.appendChild(questionEl);
-  //two step process for creating and populating the unordered list 
-  var ulEl = document.createElement("ul");
-  containerEl.appendChild(ulEl);
+  //two step process for creating and populating the ordered list 
+  var olEl = document.createElement("ol");
+  containerEl.appendChild(olEl);
   //using index of array for questions and then dot notation to call up that question's answer choices
   //each time the question loads it will programmatically create a list of buttons with textContent set to the answers from the array/object
   questionBank[currentQuestionIndexNum].answers.forEach(answer => {//answer is not to be confused with answers from the array/object
-    var listEl = document.createElement("li");
-    ulEl.appendChild(listEl);
+    // var listEl = document.createElement("li");
+    // olEl.appendChild(listEl);
+    // var buttonEl = document.createElement("button");
+    // listEl.appendChild(buttonEl);
+    // buttonEl.textContent = answer;
     var buttonEl = document.createElement("button");
-    listEl.appendChild(buttonEl);
-    buttonEl.textContent = answer;
+    olEl.appendChild(buttonEl);
+    var listEl = document.createElement("li");
+    buttonEl.appendChild(listEl);
+    listEl.textContent = answer;
     //setting up event listener for each button//I feel like this could go with the varifyAnswer function
     buttonEl.addEventListener("click", getQuestionsAndAnswers);
     if (answer === questionBank[currentQuestionIndexNum].correctAnswer) {
