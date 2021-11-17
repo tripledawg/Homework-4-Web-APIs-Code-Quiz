@@ -57,64 +57,66 @@ var timeLeft = 75;
 var savedScore = 1; //putting in starting numbers to define these vars as integers
 var currentQuestionIndexNum = -1//so it starts out empty at first
 
-// variables to reference DOM elements
-
-var questionEl = document.getElementById("question");
-var ansStatusEl = document.getElementById("ansStatus");
-var ansList = document.getElementById("ans-list");
-var lineEl = document.getElementById("line");
+// variables to reference start button
 var startButtonEl = document.getElementById("startButton");
-//function to get the quiz going 
-
 startButtonEl.addEventListener("click", getQuestionsAndAnswers);
+var containerEl = document.getElementById("container");
 
+//function that starts the quiz
 function getQuestionsAndAnswers(event) {
+//preventing the question from showing up without being clicked
   event.preventDefault();
-  currentQuestionIndexNum++;
-  questionEl.textContent = questionBank[currentQuestionIndexNum].question;
-  //removes all child elements from the answer list placeholder
-  while (ansList.firstChild) {
-    ansList.removeChild(ansList.firstChild);
+  while (containerEl.firstChild) {
+    containerEl.removeChild(containerEl.firstChild);//cycles through twice to clear out the container element of the Welcome message and start button once the start button is clicked
   }
+//iterating through the array of questions
+  currentQuestionIndexNum++;  
+  //two step process for creating and populating a question element
+  var questionEl = document.createElement("div");
+  questionEl.textContent = questionBank[currentQuestionIndexNum].question;//index iterating through question bank
+  //appending the question to the container
+  containerEl.appendChild(questionEl);
+  //two step process for creating and populating the unordered list 
   var ulEl = document.createElement("ul");
-  ansList.appendChild(ulEl);//from class
-  questionBank[currentQuestionIndexNum].answers.forEach(answer => {
+  containerEl.appendChild(ulEl);
+  //using index of array for questions and then dot notation to call up that question's answer choices
+  //each time the question loads it will programmatically create a list of buttons with textContent set to the answers from the array/object
+  questionBank[currentQuestionIndexNum].answers.forEach(answer => {//answer is not to be confused with answers from the array/object
     var listEl = document.createElement("li");
     ulEl.appendChild(listEl);
     var buttonEl = document.createElement("button");
     listEl.appendChild(buttonEl);
     buttonEl.textContent = answer;
-    buttonEl.addEventListener("click", verifyAnswer);
+    //setting up event listener for each button//I feel like this could go with the varifyAnswer function
+    buttonEl.addEventListener("click", getQuestionsAndAnswers);
     if (answer === questionBank[currentQuestionIndexNum].correctAnswer) {
-      buttonEl.isCorrect = true;//created a variable called isCorrect
+      buttonEl.isCorrect = true;//creates a variable called isCorrect set to the .correctAnswer part of the arrray.  
+    }
+    else {
+      buttonEl.notCorrect = true;//creates a variable called notCorrect.. These variables can then be called in the feedback function
     }
 
   });
-
-  function verifyAnswer(event) {
-    //add line
-    var containerEl = document.getElementById("container");
-    // create a line element
-    var lineEl = document.createElement("div");
-    containerEl.appendChild(lineEl);
-    var feedback = document.createElement("div");
-    containerEl.appendChild(feedback);
-    if (event.currentTarget.isCorrect) {
-      feedback.textContent = "Correct!";
-    }
-    else {
-      feedback.textContent = "Wrong!";
-    }
-  }
-
-
-  // clear list placeholder using removeChild()
-  // create a list
-  // for each answer in questionbank[current], create a button list-item and write answer as text.
- 
+  verifyAnswer(event);
 }
 
-
+function verifyAnswer(event) {
+  // creating and appending a line div element to the container element on the html
+  var lineEl = document.createElement("div");
+  containerEl.appendChild(lineEl);
+  var feedback = document.createElement("div");
+  containerEl.appendChild(feedback);
+  //logic to verify answer
+  if (event.currentTarget.isCorrect) {//currentTarget used because target would not work for this
+    feedback.textContent = "Correct!";
+  }
+  else if (event.currentTarget.notCorrect) {
+    feedback.textContent = "Wrong!";
+  }
+  else {
+    containerEl.removeChild(feedback);
+  }
+}
 
 
 
@@ -155,8 +157,8 @@ var timeLeft = 75;
 function setTime() {
   // Sets interval in variable
   var timerInterval = setInterval(function () {
-    secondsLeft--;
-    timeEl.textContent = "Time Left: " + secondsLeft;
+    timeLeft--;
+    timeEl.textContent = "Time Left: " + timeLeft;
 
     if (secondsLeft === 0) {
       // Stops execution of action at set interval
