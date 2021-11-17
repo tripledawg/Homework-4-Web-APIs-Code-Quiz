@@ -55,7 +55,7 @@ var questionBank = [
 // variables to keep track of quiz state
 var timeLeft = 75;
 var savedScore = 1; //putting in starting numbers to define these vars as integers
-var currentQuestionIndexNum = -1//so it starts out empty at first
+var questionBankIndex = -1//so it starts out empty at first
 
 // variables to reference start button
 var startButtonEl = document.getElementById("startButton");
@@ -64,37 +64,39 @@ var containerEl = document.getElementById("container");
 
 //function that starts the quiz
 function getQuestionsAndAnswers(event) {
-//preventing the question from showing up without being clicked
+  //preventing the question from showing up without being clicked
   event.preventDefault();
   while (containerEl.firstChild) {
     containerEl.removeChild(containerEl.firstChild);//cycles through twice to clear out the container element of the Welcome message and start button once the start button is clicked
   }
-//iterating through the array of questions
-  currentQuestionIndexNum++;  
+  //iterating through the array of questions
+  questionBankIndex++;
   //two step process for creating and populating a question element
   var questionEl = document.createElement("div");
-  questionEl.textContent = questionBank[currentQuestionIndexNum].question;//index iterating through question bank
+  questionEl.textContent = questionBank[questionBankIndex].question;//index iterating through question bank
   //appending the question to the container
   containerEl.appendChild(questionEl);
   //two step process for creating and populating the ordered list 
-  var olEl = document.createElement("ol");
-  containerEl.appendChild(olEl);
+  var ulEl = document.createElement("ul");
+  containerEl.appendChild(ulEl);
+  ulEl.setAttribute("style", "list-style-type: none");
   //using index of array for questions and then dot notation to call up that question's answer choices
   //each time the question loads it will programmatically create a list of buttons with textContent set to the answers from the array/object
-  questionBank[currentQuestionIndexNum].answers.forEach(answer => {//answer is not to be confused with answers from the array/object
-    // var listEl = document.createElement("li");
-    // olEl.appendChild(listEl);
-    // var buttonEl = document.createElement("button");
-    // listEl.appendChild(buttonEl);
-    // buttonEl.textContent = answer;
-    var buttonEl = document.createElement("button");
-    olEl.appendChild(buttonEl);
+  questionBank[questionBankIndex].answers.forEach((answer, index) => {//answer is not to be confused with answers from the array/object  array.prototype.forEach
     var listEl = document.createElement("li");
-    buttonEl.appendChild(listEl);
-    listEl.textContent = answer;
+    ulEl.appendChild(listEl);
+    var buttonEl = document.createElement("button");
+    buttonEl.setAttribute("style", "background-color: #9370db");
+    listEl.appendChild(buttonEl);
+    buttonEl.textContent = (index + 1) + ". " + answer;
     //setting up event listener for each button//I feel like this could go with the varifyAnswer function
-    buttonEl.addEventListener("click", getQuestionsAndAnswers);
-    if (answer === questionBank[currentQuestionIndexNum].correctAnswer) {
+    if ((questionBankIndex + 1) === questionBank.length) {
+      buttonEl.addEventListener("click", endQuiz);
+    } else {
+      buttonEl.addEventListener("click", getQuestionsAndAnswers);
+    }
+
+    if (answer === questionBank[questionBankIndex].correctAnswer) {
       buttonEl.isCorrect = true;//creates a variable called isCorrect set to the .correctAnswer part of the arrray.  
     }
     else {
@@ -123,7 +125,54 @@ function verifyAnswer(event) {
   }
 }
 
+function timer () {
+var timeEl = document.getElementById("time-left");
 
+timeEl.setInterval(function () {
+  timeLeft--;//???
+  timeEl.textContent = "Time Left: " + timeLeft;
+
+  if (secondsLeft === 0) {
+    // Stops execution of action at set interval
+    clearInterval(timerInterval);
+
+    timeWhenQuizStopped();
+  }
+
+}, 1000);
+}
+
+
+
+function userScore() {
+
+  return userScore
+
+}
+
+
+
+
+function endQuiz() {
+
+  while (containerEl.firstChild) {
+    containerEl.removeChild(containerEl.firstChild);//cycles through twice to clear out the container element of the Welcome message and start button once the start button is clicked
+  }
+  var allDone = document.createElement("div");
+  containerEl.appendChild(allDone)
+  allDone.textContent = "All Done!  Your score is " + userScore + " seconds left."
+}
+
+
+
+
+
+
+
+function highScores () {
+  var scoreDisplay = document.getElementById("high-score")
+
+}
 
 
 
@@ -158,7 +207,7 @@ function verifyAnswer(event) {
 //checks if user ran out of time 
 
 var timeLeft = 75;
-
+//I already have a div for the time left
 function setTime() {
   // Sets interval in variable
   var timerInterval = setInterval(function () {
@@ -169,7 +218,7 @@ function setTime() {
       // Stops execution of action at set interval
       clearInterval(timerInterval);
       // Calls function to create and append image
-      sendMessage();
+      timeWhenQuizStopped();
     }
 
   }, 1000);
