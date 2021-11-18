@@ -54,18 +54,18 @@ var questionBank = [
 ];
 // variables to keep track of quiz state
 var timeLeft = 75;
+var timerInterval;
 var savedScore = 1; //putting in starting numbers to define these vars as integers
 var questionBankIndex = -1//so it starts out empty at first
 
 // variables to reference start button
 var startButtonEl = document.getElementById("startButton");
-startButtonEl.addEventListener("click", getQuestionsAndAnswers);
+startButtonEl.addEventListener("click", timer);
 var containerEl = document.getElementById("container");
 
 //function that starts the quiz
-function getQuestionsAndAnswers(event) {
+function getQuestionsAndAnswers() {
   //preventing the question from showing up without being clicked
-  event.preventDefault();
   while (containerEl.firstChild) {
     containerEl.removeChild(containerEl.firstChild);//cycles through twice to clear out the container element of the Welcome message and start button once the start button is clicked
   }
@@ -119,27 +119,30 @@ function verifyAnswer(event) {
   }
   else if (event.currentTarget.notCorrect) {
     feedback.textContent = "Wrong!";
+    timeLeft-=5;
   }
   else {
     containerEl.removeChild(feedback);
   }
 }
 
-function timer () {
+function timer (event) {
+  event.preventDefault();
 var timeEl = document.getElementById("time-left");
 
-timeEl.setInterval(function () {
-  timeLeft--;//???
+timerInterval = setInterval(function () {
+  timeLeft--;
   timeEl.textContent = "Time Left: " + timeLeft;
 
-  if (secondsLeft === 0) {
+  if (timeLeft === 0) {
     // Stops execution of action at set interval
     clearInterval(timerInterval);
+    endQuiz(); 
 
-    timeWhenQuizStopped();
   }
 
 }, 1000);
+getQuestionsAndAnswers(); 
 }
 
 
@@ -154,9 +157,9 @@ function userScore() {
 
 
 function endQuiz() {
-
+  clearInterval(timerInterval);
   while (containerEl.firstChild) {
-    containerEl.removeChild(containerEl.firstChild);//cycles through twice to clear out the container element of the Welcome message and start button once the start button is clicked
+    containerEl.removeChild(containerEl.firstChild);
   }
   var allDone = document.createElement("div");
   containerEl.appendChild(allDone)
