@@ -53,11 +53,13 @@ var questionBank = [
   }
 ];
 // variables to keep track of quiz state
-var timeLeft = 75;
+var timeLeft = 75
 var timerInterval;
-var savedScore = 1; //putting in starting numbers to define these vars as integers
+var savedScore = 1; //putting in starting numbers to define these vars as integers, not used yet
 var questionBankIndex = -1//so it starts out empty at first
-
+var viewHighScoreEl = document.getElementById("high-score");
+var highScores = [];
+localStorage.setItem("highscores", highScores);
 // variables to reference start button
 var startButtonEl = document.getElementById("startButton");
 startButtonEl.addEventListener("click", timer);
@@ -86,10 +88,10 @@ function getQuestionsAndAnswers() {
     var listEl = document.createElement("li");
     ulEl.appendChild(listEl);
     var buttonEl = document.createElement("button");
-    buttonEl.setAttribute("style", "background-color: #9370db");
+    buttonEl.setAttribute("style", "background-color: #9370db; border-radius: 5px; color: white");
     listEl.appendChild(buttonEl);
     buttonEl.textContent = (index + 1) + ". " + answer;
-    //setting up event listener for each button//I feel like this could go with the varifyAnswer function
+    //setting up event listener for each button
     if ((questionBankIndex + 1) === questionBank.length) {
       buttonEl.addEventListener("click", endQuiz);
     } else {
@@ -111,6 +113,7 @@ function verifyAnswer(event) {
   // creating and appending a line div element to the container element on the html
   var lineEl = document.createElement("div");
   containerEl.appendChild(lineEl);
+  containerEl.setAttribute("style", "margin: auto; width: 50%");
   var feedback = document.createElement("div");
   containerEl.appendChild(feedback);
   //logic to verify answer
@@ -129,7 +132,7 @@ function verifyAnswer(event) {
 function timer (event) {
   event.preventDefault();
 var timeEl = document.getElementById("time-left");
-
+timeEl.setAttribute("style", "float: right");
 timerInterval = setInterval(function () {
   timeLeft--;
   timeEl.textContent = "Time Left: " + timeLeft;
@@ -138,46 +141,65 @@ timerInterval = setInterval(function () {
     // Stops execution of action at set interval
     clearInterval(timerInterval);
     endQuiz(); 
-
   }
-
 }, 1000);
 getQuestionsAndAnswers(); 
 }
 
-
-
-function userScore() {
-
-  return userScore
-
-}
-
-
-
-
 function endQuiz() {
   clearInterval(timerInterval);
+
   while (containerEl.firstChild) {
     containerEl.removeChild(containerEl.firstChild);
   }
+
+var userScore = timeLeft;
   var allDone = document.createElement("div");
-  containerEl.appendChild(allDone)
+  var labelEl = document.createElement("label");
+  var inputEl = document.createElement("input");
+  var buttonEl = document.createElement("button");
+  ///* <label for="lname">Last name:</label>
+  //<input type="text" id="lname" name="lname">
+  containerEl.appendChild(allDone);
+  containerEl.appendChild(labelEl);
+  containerEl.appendChild(inputEl);
+  containerEl.appendChild(buttonEl);
+  labelEl.textContent = "Enter your initials here"; 
+  buttonEl.textContent = "Submit"; 
+  buttonEl.addEventListener("click", getHighScores);
   allDone.textContent = "All Done!  Your score is " + userScore + " seconds left."
+  
 }
 
+//make sure the value entered isn't empty//
+function getHighScores (event) {
+  while (containerEl.firstChild) {
+    containerEl.removeChild(containerEl.firstChild);
+  }
+  var score = {score: userScore, initials: event.currentTarget};
+  highScores.push(score); 
+  highScores.sort((a, b) => (a.score < b.score ? 1 : -1));//from stack overflow array sort function
+  var tableEl = document.createElement("table"); 
+  containerEl.appendChild(tableEl);
+  var tableHeaderRowEl = document.createElement("tr"); 
+  var tableHeaderInitialsEl = document.createElement("th");
+  var tableHeaderScoreEl = document.createElement("th"); 
+  tableEl.appendChild(tableHeaderRowEl); 
+  tableHeaderRowEl.appendChild(tableHeaderInitialsEl);
+  tableHeaderRowEl.appendChild(tableHeaderScoreEl); 
+    tableHeaderInitialsEl.textContent="Initials";
+    tableHeaderScoreEl.textContent="Score"; 
+  highScores.forEach(element => {
+    var tableRowEl = document.createElement("tr"); 
+    tableRowEl.textContent = element.initials;
+    tableRowEl.textContent = element.score; 
+    
+  });
+  localStorage.getItem("userScore");
+};
 
-
-
-
-
-
-function highScores () {
-  var scoreDisplay = document.getElementById("high-score")
-
-}
-
-
+// create object out of high score and initials then place object in the high scores array then each time we sort the array based on the score
+//display first five values of hgihscores array in table
 
 //function to pull each question
 //current question from questions
@@ -209,23 +231,7 @@ function highScores () {
 //updates time
 //checks if user ran out of time 
 
-var timeLeft = 75;
-//I already have a div for the time left
-function setTime() {
-  // Sets interval in variable
-  var timerInterval = setInterval(function () {
-    timeLeft--;
-    timeEl.textContent = "Time Left: " + timeLeft;
 
-    if (secondsLeft === 0) {
-      // Stops execution of action at set interval
-      clearInterval(timerInterval);
-      // Calls function to create and append image
-      timeWhenQuizStopped();
-    }
-
-  }, 1000);
-}
 
 //function to save the high score
 //get value of input box
