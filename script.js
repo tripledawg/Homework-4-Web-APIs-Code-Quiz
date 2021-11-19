@@ -52,10 +52,12 @@ var questionBank = [
     correctAnswer: 'console.log'
   }
 ];
+///////////////////////////////////////////////////////////////////////////////
+
 // variables to keep track of quiz state
-var timeLeft = 75
+var timeLeft = 75;
 var timerInterval;
-var savedScore = 1; //putting in starting numbers to define these vars as integers, not used yet
+// var savedScore = 1; //putting in starting numbers to define these vars as integers, not used yet
 var questionBankIndex = -1//so it starts out empty at first
 var viewHighScoreEl = document.getElementById("high-score");
 var highScores = [];
@@ -64,6 +66,9 @@ localStorage.setItem("highscores", highScores);
 var startButtonEl = document.getElementById("startButton");
 startButtonEl.addEventListener("click", timer);
 var containerEl = document.getElementById("container");
+var initialsEntered;
+
+/////////////////////////////////////////////////////////////////////////////////
 
 //function that starts the quiz
 function getQuestionsAndAnswers() {
@@ -78,6 +83,7 @@ function getQuestionsAndAnswers() {
   questionEl.textContent = questionBank[questionBankIndex].question;//index iterating through question bank
   //appending the question to the container
   containerEl.appendChild(questionEl);
+  questionEl.setAttribute("style", "font-size: large; font-weight: bold;");
   //two step process for creating and populating the ordered list 
   var ulEl = document.createElement("ul");
   containerEl.appendChild(ulEl);
@@ -109,6 +115,8 @@ function getQuestionsAndAnswers() {
   verifyAnswer(event);
 }
 
+/////////////////////////////////////////////////////////////////
+
 function verifyAnswer(event) {
   // creating and appending a line div element to the container element on the html
   var lineEl = document.createElement("div");
@@ -122,29 +130,34 @@ function verifyAnswer(event) {
   }
   else if (event.currentTarget.notCorrect) {
     feedback.textContent = "Wrong!";
-    timeLeft-=5;
+    timeLeft -= 5;
   }
   else {
     containerEl.removeChild(feedback);
   }
 }
 
-function timer (event) {
-  event.preventDefault();
-var timeEl = document.getElementById("time-left");
-timeEl.setAttribute("style", "float: right");
-timerInterval = setInterval(function () {
-  timeLeft--;
-  timeEl.textContent = "Time Left: " + timeLeft;
+//////////////////////////////////////////////////////////////////
 
-  if (timeLeft === 0) {
-    // Stops execution of action at set interval
-    clearInterval(timerInterval);
-    endQuiz(); 
-  }
-}, 1000);
-getQuestionsAndAnswers(); 
+function timer(event) {
+  event.preventDefault();
+  var timeEl = document.getElementById("time-left");
+  timeEl.setAttribute("style", "float: right");
+  timerInterval = setInterval(function () {
+    timeLeft--;
+    timeEl.textContent = "Time Left: " + timeLeft;
+
+    if (timeLeft === 0) {
+      // Stops execution of action at set interval
+      clearInterval(timerInterval);
+      endQuiz();
+    }
+  }, 1000);
+  getQuestionsAndAnswers();
 }
+
+//////////////////////////////////////////////////////////////////
+
 
 function endQuiz() {
   clearInterval(timerInterval);
@@ -153,53 +166,101 @@ function endQuiz() {
     containerEl.removeChild(containerEl.firstChild);
   }
 
-var userScore = timeLeft;
+  var userScore = timeLeft;
+  localStorage.setItem("userScore", userScore);
   var allDone = document.createElement("div");
   var labelEl = document.createElement("label");
   var inputEl = document.createElement("input");
-  var buttonEl = document.createElement("button");
+  var buttonEl = document.createElement("input");
   ///* <label for="lname">Last name:</label>
   //<input type="text" id="lname" name="lname">
   containerEl.appendChild(allDone);
   containerEl.appendChild(labelEl);
   containerEl.appendChild(inputEl);
   containerEl.appendChild(buttonEl);
-  labelEl.textContent = "Enter your initials here"; 
-  buttonEl.textContent = "Submit"; 
-  buttonEl.addEventListener("click", getHighScores);
+  inputEl.setAttribute("id", "initials")
+  labelEl.textContent = "Enter your initials here";
+  // initialsEntered.textContent= initials;
+  //this button needs to be an input/submit button
+  //<input type="button" value="Click me" onclick="msg()"></input>
+  buttonEl.setAttribute("value", "Submit");
+  buttonEl.setAttribute("type", "button");
+  buttonEl.setAttribute("onclick", "getHighScores()");
   allDone.textContent = "All Done!  Your score is " + userScore + " seconds left."
-  
+  //check if user ran out of time//
+
 }
 
+/////////////////////////////////////////////////////////////////
+
 //make sure the value entered isn't empty//
-function getHighScores (event) {
+function getHighScores() {
+  // Check that initials element exists and isn't empty
+  if (document.querySelector("#initials")) {
+    var initials = document.querySelector("#initials").value;
+    var score = { score: localStorage.getItem("userScore"), initials: initials };
+    highScores.push(score);
+    highScores.sort((a, b) => (a.score < b.score ? 1 : -1));//from stack overflow array sort function
+  }
   while (containerEl.firstChild) {
     containerEl.removeChild(containerEl.firstChild);
   }
-  var score = {score: userScore, initials: event.currentTarget};
-  highScores.push(score); 
-  highScores.sort((a, b) => (a.score < b.score ? 1 : -1));//from stack overflow array sort function
-  var tableEl = document.createElement("table"); 
+  var tableEl = document.createElement("table");
   containerEl.appendChild(tableEl);
-  var tableHeaderRowEl = document.createElement("tr"); 
+  var tableHeaderRowEl = document.createElement("tr");
   var tableHeaderInitialsEl = document.createElement("th");
-  var tableHeaderScoreEl = document.createElement("th"); 
-  tableEl.appendChild(tableHeaderRowEl); 
+  var tableHeaderScoreEl = document.createElement("th");
+  tableEl.appendChild(tableHeaderRowEl);
   tableHeaderRowEl.appendChild(tableHeaderInitialsEl);
-  tableHeaderRowEl.appendChild(tableHeaderScoreEl); 
-    tableHeaderInitialsEl.textContent="Initials";
-    tableHeaderScoreEl.textContent="Score"; 
+  tableHeaderRowEl.appendChild(tableHeaderScoreEl);
+  tableHeaderInitialsEl.textContent = "Initials";
+  tableHeaderScoreEl.textContent = "Score";
   highScores.forEach(element => {
-    var tableRowEl = document.createElement("tr"); 
-    tableRowEl.textContent = element.initials;
-    tableRowEl.textContent = element.score; 
-    
+    var tableRowEl = document.createElement("tr");
+    var tableDataInitials = document.createElement("td");
+    var tableDataScore = document.createElement("td");
+    tableEl.appendChild(tableRowEl);
+    tableRowEl.appendChild(tableDataInitials);
+    tableRowEl.appendChild(tableDataScore);
+    tableDataInitials.textContent = element.initials;
+    tableDataScore.textContent = element.score;
   });
-  localStorage.getItem("userScore");
+  var goBackButton = document.createElement("button");
+  goBackButton.textContent = "Go Back";
+  goBackButton.addEventListener("click", function (event) {
+    questionBankIndex = -1;
+    getQuestionsAndAnswers();
+  });
+  containerEl.appendChild(goBackButton);
+  //reset questionBank Index to -1 and call GetQuestions and Answers fucntion
+  var clearButton = document.createElement("button");
+  containerEl.appendChild(clearButton);
+  clearButton.textContent = "Clear High Scores";
+  clearButton.addEventListener("click", function (event) {
+    highScores = [];
+    getHighScores();
+  });
+  //set high scores array to empty array, call get Highscores function
 };
 
 // create object out of high score and initials then place object in the high scores array then each time we sort the array based on the score
 //display first five values of hgihscores array in table
+
+//function to save the high score
+//get value of input box
+//make sure value isnt empty
+//get saved scores from localstorage, or if not any, set to empty array
+//format new score object for current user 
+//save to localstorage
+//redirect to next page
+
+// user clicks button to submit initials
+
+
+// user clicks button to start 
+
+
+
 
 //function to pull each question
 //current question from questions
@@ -233,27 +294,4 @@ function getHighScores (event) {
 
 
 
-//function to save the high score
-//get value of input box
-//make sure value isnt empty
-//get saved scores from localstorage, or if not any, set to empty array
-//format new score object for current user 
-//save to localstorage
-//redirect to next page
 
-// function renderSavedScores() {
-//   var savedScore = localStorage.getItem("saved-score");
-
-//   if (!savedScore) {
-//     return;
-//   }
-//   var savedScore = document.querySelector("saved-score").value;
-
-//   localStorage.setItem("saved-score", savedScore);
-//   renderLastRegistered();
-
-
-// user clicks button to submit initials
-
-
-// user clicks button to start 
