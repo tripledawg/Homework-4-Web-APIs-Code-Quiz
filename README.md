@@ -1,11 +1,31 @@
 # Homework-4-Web-APIs-Code-Quiz
-HTML: 
-I created an html with just the start button, p tag with directions, View High Scores anchor tag, and the Time Left element.  
-JS: 
-I Created a question bank which was an array of objects with key value pairs for questions, answers and correct answer.  I stored the answers values as an array.  
-I created a bank of global variables to keep track of the quiz state and a place to store the high scores. 
-I created a container for the Welcome info and future quiz questions and an event listeniner to the start button.  
-I then created a function that cleared out the Welcome message and called the question bank 
+
+## HTML
+I created an html with the start button element, a p tag with directions, a View High Scores anchor tag, and a Time Left div element.  
+
+## JS
+I created a question bank which was an array of objects with key value pairs for questions, answers and correct answer with the answers values stored as an array.  
+I created a bank of global variables to keep track of the quiz state and to store the high scores. 
+I created an event listener for the startup button which called the timer which calls the questions and answers. 
+I created a container for the Welcome info and future quiz questions and an event listeniner to the start button. 
+
+I then created a function called getQuestionsAndAnswers that cleared out the welcome message and called the question bank. It also assigned a variable isCorrect or notCorrect based on the correct answer. Finally, this function called another function, the verifyAnswer function.  
+
+The verifyAnswer function created a feedback variable and created an element declaring if the question was right or wrong based on the isCorrect or notCorrect variable from the getQuestionsAndAnswers function.  It also calls the timer function to decrement the time by 5 seconds if the answer is wrong. 
+
+The timer function uses the setInterval to decrement the starting time every second. 
+
+The endQuiz function clears the container and presents the user with a labeled input box and a submit button for initials. 
+
+The getHighScores function pushes the scores onto the globally defined variable/array highScores. The scores are then sorted.  For each score a list item is created with concatenated text that incorporates the index number, the initials and the score. This function also creates Go Back and a Clear High Scores buttons. 
+
+Lastly, the getStartPage function redraws the page if the user clicks Go Back or if time runs out.  
+
+Throughout the JS, I used setAttribute to set individual styles as needed.  More importantly, setAttribute helped me refer between functions by setting id, type, value and onclick attributes.  
+
+## CSS 
+I created a separate css to make all the fonts and all the true button elements the same.  (The Submit button for the inititals I discovered is technically an input element, so there is individual setAttribute styling for it.)  
+
 
 
 
