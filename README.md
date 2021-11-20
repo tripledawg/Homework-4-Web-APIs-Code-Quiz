@@ -1,6 +1,12 @@
 # Homework-4-Web-APIs-Code-Quiz
 
+## Screenshot
+
 [screenshot](./assets/screenshot-code-quiz.png)
+
+## URL of deployed page
+
+https://tripledawg.github.io/Homework-4-Web-APIs-Code-Quiz/
 
 
 ## HTML
