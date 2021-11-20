@@ -1,5 +1,8 @@
 # Homework-4-Web-APIs-Code-Quiz
 
+[screenshot](./assets/screenshot-code-quiz.png)
+
+
 ## HTML
 I created an html with the start button element, a p tag with directions, a View High Scores anchor tag, and a Time Left div element.  
 
@@ -28,7 +31,7 @@ I created a separate css to make all the fonts and all the true button elements 
 
 
 
-
+_____________________________________________________________________________________________________________________
 
 ## Your Task
 
