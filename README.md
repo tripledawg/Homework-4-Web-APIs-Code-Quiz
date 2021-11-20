@@ -1,4 +1,14 @@
 # Homework-4-Web-APIs-Code-Quiz
+HTML: 
+I created an html with just the start button, p tag with directions, View High Scores anchor tag, and the Time Left element.  
+JS: 
+I Created a question bank which was an array of objects with key value pairs for questions, answers and correct answer.  I stored the answers values as an array.  
+I created a bank of global variables to keep track of the quiz state and a place to store the high scores. 
+I created a container for the Welcome info and future quiz questions and an event listeniner to the start button.  
+I then created a function that cleared out the Welcome message and called the question bank 
+
+
+
 
 ## Your Task
 

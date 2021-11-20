@@ -63,7 +63,6 @@ var timerInterval;
 var questionBankIndex = -1//so it starts out empty at first
 var highScores = [];
 localStorage.setItem("highscores", highScores);
-var initialsEntered;
 
 // start up
 var startButtonEl = document.getElementById("startButton");
@@ -73,7 +72,7 @@ var containerEl = document.getElementById("container");
 containerEl.setAttribute("style", "margin: auto; width: 50%");
 
 
-//This function calls the question bank
+//This function calls the question bank.
 function getQuestionsAndAnswers() {
   //prevents the question from showing up without being clicked
   while (containerEl.firstChild) {
@@ -87,13 +86,13 @@ function getQuestionsAndAnswers() {
   //appending the question to the container
   containerEl.appendChild(questionEl);
   questionEl.setAttribute("style", "font-size: large; font-weight: bold;");
-  //two step process for creating and populating the ordered list 
+  //two step process for creating and populating the list 
   var ulEl = document.createElement("ul");
   containerEl.appendChild(ulEl);
   ulEl.setAttribute("style", "list-style-type: none");//gets rid of bullets
   //using index of array for questions and then dot notation to call up that question's answer choices
   //each time the question loads it will programmatically create a list of buttons with textContent set to the answers from the array/object
-  questionBank[questionBankIndex].answers.forEach((answer, index) => {//answer is not to be confused with answers from the array/object  array.prototype.forEach
+  questionBank[questionBankIndex].answers.forEach((answer, index) => {//JS allows forEach to pass in an element and an index
     var listEl = document.createElement("li");
     ulEl.appendChild(listEl);
     var buttonEl = document.createElement("button");
@@ -120,7 +119,7 @@ function getQuestionsAndAnswers() {
 }
 
 
-//This function uses the isCorrect or notCorrect varaibles assigned in getQuestionsAndAnswers and provides feedback of Correct or Wrong
+//This function uses the isCorrect or notCorrect varaibles assigned in getQuestionsAndAnswers and provides feedback of Correct or Wrong.
 function verifyAnswer(event) {
   // creating and appending a line div element to the container element on the html
   var lineEl = document.createElement("div");
@@ -161,7 +160,7 @@ function timer(event) {
 }
 
 
-//This function stops the timer, clears the container for the page, and then presents the user with an input and submit button for initials
+//This function stops the timer, clears the container for the page, and then presents the user with an input and submit button for initials.
 function endQuiz() {
   clearInterval(timerInterval);
 
@@ -194,10 +193,10 @@ function endQuiz() {
 }
 
 
-//This function stores initials and combines then with user score
+//This function stores initials and combines then with user score.
 function getHighScores() {
   if (document.querySelector("#initials")) {
-    var initials = document.querySelector("#initials").value;
+    var initials = document.getElementById("initials").value;//used to get user input value  
     var score = { score: localStorage.getItem("userScore"), initials: initials };
     highScores.push(score);
     highScores.sort((a, b) => (a.score < b.score ? 1 : -1));//from stack overflow array sort function
@@ -205,30 +204,30 @@ function getHighScores() {
   while (containerEl.firstChild) {
     containerEl.removeChild(containerEl.firstChild);
   }
-
+  //header for high scores
   var listHeadingEl = document.createElement("h1");
   containerEl.appendChild(listHeadingEl);
   listHeadingEl.textContent = "High Scores:";
 
-  var listEl = document.createElement("ol");//changed to ol, but no order showing
+  var listEl = document.createElement("ul");
   listHeadingEl.appendChild(listEl);
-  highScores.forEach(element => {
+  //passed index to forEach to order list of highscores
+  highScores.forEach((element, index) => {
     var liEl = document.createElement("li");
     listEl.appendChild(liEl);
-    liEl.textContent = element.initials + " - " + element.score;  //highScores[+1]//???
+    liEl.textContent = (index + 1) + ". " + element.initials + " - " + element.score;
     liEl.setAttribute("style", "list-style-type: none; padding: 5px; font-size: 20px; border-bottom: 1px solid; background-color: #ccccff")
   });
-
+//Go Back button
   var goBackButton = document.createElement("button");
   goBackButton.textContent = "Go Back";
   goBackButton.setAttribute("style", "font-size: 16px; background-color: #9370db; border-radius: 5px; color: white");
   goBackButton.addEventListener("click", function (event) {
     questionBankIndex = -1;
     getStartPage();
-
+//Clear High Scores button
   });
   containerEl.appendChild(goBackButton);
-
   var clearButton = document.createElement("button");
   containerEl.appendChild(clearButton);
   clearButton.textContent = "Clear High Scores";
@@ -240,7 +239,7 @@ function getHighScores() {
 };
 
 
-//This function redraws the start up page if the quiz cycle is restarted
+//This function redraws the start up page if the quiz cycle is restarted.
 function getStartPage() {
   while (containerEl.firstChild) {
     containerEl.removeChild(containerEl.firstChild);
